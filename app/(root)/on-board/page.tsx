@@ -1,9 +1,14 @@
+"use client"
+
 import React from 'react'
 import bg from '@/public/assets/bg-onboarding.jpg'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
 
-function page() {
+function OnBoard() {
+    const navigate = useRouter()
+    
     return (
         <main
             className="min-h-screen bg-cover bg-center"
@@ -25,7 +30,12 @@ function page() {
                     “Solusi Tepat untuk Hidup yang lebih panjang”
                 </h3>
                 <div className='flex flex-row gap-9'>
-                    <Button className='w-[251px] h-[50px] font-libre-baskerville font-bold text-[29px] text-[#4C572D] bg-[#EBFFDE] py-3 border border-main'>
+                    <Button 
+                    className='w-[251px] h-[50px] font-libre-baskerville font-bold text-[29px] text-[#4C572D] bg-[#EBFFDE] py-3 border border-main'
+                        onClick={() => {
+                            navigate.push('/login')
+                        }}
+                    >
                         Masuk
                     </Button>
                     <Button className='w-[251px] h-[50px] font-libre-baskerville font-bold text-[29px] text-second bg-main py-3'>
@@ -37,4 +47,4 @@ function page() {
     )
 }
 
-export default page
+export default OnBoard
