@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 function ForgotPassword() {
     const navigate = useRouter();
     const { setLoading } = useLoading();
-    const email = localStorage.getItem("email") || '';
+    const email = localStorage?.getItem("email") || '';
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
 
