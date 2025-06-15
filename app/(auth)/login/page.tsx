@@ -1,15 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import bg from '@/public/assets/bg-login_register.jpg';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { FcGoogle } from 'react-icons/fc';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { useLoading } from '@/context/LoadingContext';
+import * as API_AUTH from '@/service/apiAuth';
+import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 
 function Login() {
   const navigate = useRouter();
+  const { setLoading } = useLoading();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const query = {
+      input: email,
+      password: password,
+    };
+    await API_AUTH.Login(query)
+      .then((res: any) => {
+        toast.success(res.data.message)
+        navigate.push("/dashboard")
+        localStorage.setItem("token", res.data.token);
+        console.log(res.data)
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message)
+        setLoading(false);
+      });
+  };
 
   return (
     <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>
@@ -21,12 +50,27 @@ function Login() {
                 <span className="font-bold text-4xl text-third">Masuk</span>
                 <p className="font-normal font-base text-third opacity-50">Selamat Datang - kita bertemu lagi!</p>
               </div>
-              <form className="flex flex-col gap-4 mt-6 w-full">
+              <form className="flex flex-col gap-4 mt-6 w-full" onSubmit={handleLogin}>
                 <span className="font-normal text-base text-third">Nama Pengguna (Username)/E-mail</span>
-                <input type="email" placeholder="Masukkan Nama Pengguna (Username)/E-mail" className="p-4 border border-[#4C572D] rounded-[13px] w-full text-sm" />
+                <Input
+                  type="email"
+                  placeholder="Masukkan Username/E-mail"
+                  className="border border-[#4C572D] w-full text-sm py-6 mb-4"
+                  onChange={(e) => { setEmail(e.target.value) }}
+                />
                 <span className="font-normal text-base text-third">Kata Sandi</span>
-                <input type="password" placeholder="Kata Sandi" className="p-4 border border-[#4C572D] rounded-[13px] w-full text-sm" />
-                <span className="text-xs text-end font-semibold text-[#CC722E] cursor-pointer">Lupa Kata Sandi?</span>
+                <Input
+                  type="password"
+                  placeholder="Kata Sandi"
+                  className="border border-[#4C572D] w-full text-sm py-6 mb-4"
+                  onChange={(e) => { setPassword(e.target.value) }}
+                />
+                <span
+                  className="text-xs text-end font-semibold text-[#CC722E] cursor-pointer"
+                  onClick={() => navigate.push('/forgot-password')}
+                >
+                  Lupa Kata Sandi?
+                </span>
                 <Button className="w-full rounded-[13px] font-medium text-white bg-main py-6">Masuk</Button>
                 <div className="flex items-center gap-10 w-[40%]">
                   <Separator className="my-4" />
