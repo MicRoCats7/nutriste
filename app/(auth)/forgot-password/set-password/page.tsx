@@ -11,7 +11,7 @@ import { useLoading } from '@/context/LoadingContext';
 import * as API_AUTH from '@/service/apiAuth';
 import { toast } from 'sonner';
 
-function ForgotPassword() {
+function SetPassword() {
     const navigate = useRouter();
     const { setLoading } = useLoading();
     const email = localStorage?.getItem("email") || '';
@@ -93,4 +93,4 @@ function ForgotPassword() {
 }
 
 
-export default ForgotPassword;
+export default SetPassword;
