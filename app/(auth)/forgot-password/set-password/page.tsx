@@ -6,7 +6,7 @@ import { IoIosLock } from "react-icons/io";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLoading } from '@/context/LoadingContext';
 import * as API_AUTH from '@/service/apiAuth';
 import { toast } from 'sonner';
@@ -14,9 +14,15 @@ import { toast } from 'sonner';
 function SetPassword() {
     const navigate = useRouter();
     const { setLoading } = useLoading();
-    const email = localStorage?.getItem("email") || '';
+    const [email, setEmail] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setEmail(localStorage.getItem("email") || '');
+        }
+    }, []);
 
     const handleSetPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
