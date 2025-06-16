@@ -2,7 +2,7 @@
 
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import React from 'react';
+import React, { useRef } from 'react';
 import { BiEditAlt } from "react-icons/bi";
 import { Input } from '@/components/ui/input';
 import { TiArrowLeft, TiArrowRight } from "react-icons/ti";
@@ -15,12 +15,17 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useLoading } from '@/context/LoadingContext';
+import * as API_NUTRITION from '@/service/apiNutrition';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 function FormAccount() {
+  const { setLoading } = useLoading();
+  const navigate = useRouter();
   const [currentStep, setCurrentStep] = React.useState(0);
   const [name, setName] = React.useState<string>("");
   const [selectedGender, setSelectedGender] = React.useState<"pria" | "wanita" | null>(null);
@@ -31,6 +36,70 @@ function FormAccount() {
   const [foodRestrictions, setFoodRestrictions] = React.useState<string>("");
   const [dailyActivity, setDailyActivity] = React.useState<string>("");
   const [activityLevel, setActivityLevel] = React.useState<string>("");
+  const [mealsPerDay, setMealsPerDay] = React.useState<string>("");
+  const [favoriteFoods, setFavoriteFoods] = React.useState<string>("");
+  const [appPurpose, setAppPurpose] = React.useState<string>("");
+
+  const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const MAX_SIZE = 2 * 1024 * 1024;
+      if (file.size > MAX_SIZE) {
+        toast.error('Ukuran file maksimal 2MB');
+        return;
+      }
+
+      setAvatarFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true)
+
+    const formData = new FormData();
+    formData.append('name', name);
+    if (selectedGender) formData.append('gender', selectedGender);
+    formData.append('age', age.toString());
+    formData.append('weight', weight.toString());
+    formData.append('height', height.toString());
+    formData.append('healthCondition', healthHistory);
+    formData.append('foodRestrictions', foodRestrictions);
+    formData.append('activity', dailyActivity);
+    formData.append('activeStatus', activityLevel);
+    formData.append('mealsPerDay', mealsPerDay);
+    formData.append('favouriteFood', favoriteFoods);
+    formData.append('purposes', appPurpose);
+
+    if (avatarFile) {
+      formData.append('photo', avatarFile);
+    }
+
+    await API_NUTRITION.addProfile(formData)
+      .then((res: any) => {
+        toast.success(res.data.message)
+        setLoading(false);
+        navigate.push('/menu-utama')
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message || "Error")
+        setLoading(false);
+      }).finally(() => {
+        setLoading(false);
+      })
+  }
 
   return (
     <main className="min-h-screen bg-[#EAFFE4]">
@@ -59,12 +128,26 @@ function FormAccount() {
                 <div className='flex flex-col items-center w-1/2 pl-10'>
                   <div className='relative flex flex-col items-center justify-center mb-6'>
                     <Avatar className='w-32 h-32 mb-4'>
-                      <AvatarImage src="https://github.com/shadcn.png" />
+                      {avatarPreview ? (
+                        <AvatarImage src={avatarPreview} />
+                      ) : (
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                      )}
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <div className='bg-[#2F3B10] p-2 rounded-full absolute bottom-4 right-1 cursor-pointer'>
+                    <div
+                      className='bg-[#2F3B10] p-2 rounded-full absolute bottom-4 right-1 cursor-pointer'
+                      onClick={handleAvatarClick}
+                    >
                       <BiEditAlt size={22} color='EAFFB8' />
                     </div>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
                   </div>
                   <h3 className='text-black opacity-50 font-medium text-sm'>Tambahkan Profil Baru</h3>
                 </div>
@@ -73,7 +156,11 @@ function FormAccount() {
                   <h3 className='font-medium text-black opacity-25 text-lg mb-10'>Jawab Pertanyaannya dengan baik & benar ya!</h3>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Nama Lengkap</h3>
-                    <Input className='border-2 border-black w-full' />
+                    <Input
+                      className='border-2 border-black w-full'
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Jenis Kelamin</h3>
@@ -96,7 +183,12 @@ function FormAccount() {
                   </div>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Usia</h3>
-                    <Input className='border-2 border-black w-full' />
+                    <Input
+                      className='border-2 border-black w-full'
+                      type="number"
+                      value={age || ''}
+                      onChange={(e) => setAge(Number(e.target.value))}
+                    />
                   </div>
                   <div
                     className='flex items-center justify-end gap-1 w-full mt-10 cursor-pointer'
@@ -120,11 +212,21 @@ function FormAccount() {
                   <h3 className='font-medium text-black opacity-25 text-lg mb-10'>Jawab Pertanyaannya dengan baik & benar ya!</h3>
                   <div className='flex flex-col gap-2 w-2/3'>
                     <h3 className='font-bold text-base text-black'>Berat Badan</h3>
-                    <Input className='border-2 border-black w-2/3' type='number' />
+                    <Input
+                      className='border-2 border-black w-2/3'
+                      type='number'
+                      value={weight || ""}
+                      onChange={(e) => setWeight(Number(e.target.value))}
+                    />
                   </div>
                   <div className='flex flex-col gap-2 w-2/3'>
                     <h3 className='font-bold text-base text-black'>Tinggi Badan</h3>
-                    <Input className='border-2 border-black w-2/3' type='number' />
+                    <Input
+                      className='border-2 border-black w-2/3'
+                      type='number'
+                      value={height || ''}
+                      onChange={(e) => setHeight(Number(e.target.value))}
+                    />
                   </div>
                   <div className='flex items-center justify-between gap-2 w-full'>
                     <div
@@ -164,11 +266,21 @@ function FormAccount() {
                   <h3 className='font-medium text-black opacity-25 text-lg mb-10'>Jawab Pertanyaannya dengan baik & benar ya!</h3>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Riwayat kesehatan/penyakit?</h3>
-                    <Input className='border-2 border-black w-3/4' type='text' />
+                    <Input
+                      className='border-2 border-black w-3/4'
+                      type='text'
+                      value={healthHistory || ""}
+                      onChange={(e) => setHealthHistory(e.target.value)}
+                    />
                   </div>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Memiliki pantangan makanan?</h3>
-                    <Input className='border-2 border-black w-3/4' type='text' />
+                    <Input
+                      className='border-2 border-black w-3/4'
+                      type='text'
+                      value={foodRestrictions || ""}
+                      onChange={(e) => setFoodRestrictions(e.target.value)}
+                    />
                   </div>
                   <div className='flex items-center justify-between gap-2 w-full'>
                     <div
@@ -201,23 +313,27 @@ function FormAccount() {
                   <h3 className='font-medium text-black opacity-25 text-lg mb-10'>Jawab Pertanyaannya dengan baik & benar ya!</h3>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Aktivitas harian</h3>
-                    <Input className='border-2 border-black w-5/6' type='text' />
+                    <Input
+                      className='border-2 border-black w-5/6'
+                      type='text'
+                      value={dailyActivity || ""}
+                      onChange={(e) => setDailyActivity(e.target.value)}
+                    />
                   </div>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Seberapa aktif Anda dalam kehidupan sehari-hari?</h3>
                     <div className='w-5/6'>
-                      <Select>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a fruit" />
+                      <Select onValueChange={(value) => setActivityLevel(value)}>
+                        <SelectTrigger className="w-full border-2 border-black">
+                          <SelectValue placeholder="Pilih" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                            <SelectItem value="sangat aktif">Sangat Aktif</SelectItem>
+                            <SelectItem value="aktif">Aktif</SelectItem>
+                            <SelectItem value="biasa saja">Biasa Saja</SelectItem>
+                            <SelectItem value="tidak aktif">Tidak Aktif</SelectItem>
+                            <SelectItem value="sangat tidak aktif">Sangat Tidak Aktif</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -254,11 +370,21 @@ function FormAccount() {
                   <h3 className='font-medium text-black opacity-25 text-lg mb-10'>Jawab Pertanyaannya dengan baik & benar ya!</h3>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Berapa kali anda makan dalam satu hari</h3>
-                    <Input className='border-2 border-black w-5/6' type='text' />
+                    <Input
+                      className='border-2 border-black w-5/6'
+                      type='text'
+                      value={mealsPerDay || ""}
+                      onChange={(e) => setMealsPerDay(e.target.value)}
+                    />
                   </div>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Makanan apa yang anda sukai</h3>
-                    <Input className='border-2 border-black w-5/6' type='text' />
+                    <Input
+                      className='border-2 border-black w-5/6'
+                      type='text'
+                      value={favoriteFoods || ""}
+                      onChange={(e) => setFavoriteFoods(e.target.value)}
+                    />
                   </div>
                   <div className='flex items-center justify-between gap-2 w-full'>
                     <div
@@ -291,7 +417,12 @@ function FormAccount() {
                   <h3 className='font-medium text-black opacity-25 text-lg mb-10'>Jawab Pertanyaannya dengan baik & benar ya!</h3>
                   <div className='flex flex-col gap-2 w-full'>
                     <h3 className='font-bold text-base text-black'>Tujuan utama anda menggunakan aplikasi ini</h3>
-                    <Input className='border-2 border-black w-5/6' type='text' />
+                    <Input
+                      className='border-2 border-black w-5/6'
+                      type='text'
+                      value={appPurpose || ""}
+                      onChange={(e) => setAppPurpose(e.target.value)}
+                    />
                   </div>
                   <div className='flex items-center justify-between gap-2 w-full'>
                     <div
@@ -303,7 +434,7 @@ function FormAccount() {
                     </div>
                     <div
                       className='flex items-center justify-end gap-1 w-full mt-10 cursor-pointer'
-                      onClick={() => setCurrentStep((prev) => Math.min(prev + 1, 5))}
+                      onClick={() => handleSubmit()}
                     >
                       <span className='font-bold'>Kirim</span>
                       <TiArrowRight size={20} />

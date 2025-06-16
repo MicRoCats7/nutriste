@@ -10,6 +10,7 @@ import { GiChickenOven } from 'react-icons/gi';
 import { IoFastFoodSharp, IoTimer, IoWarning } from 'react-icons/io5';
 import { ChartPieSimple } from '@/components/shared/Chart';
 import { Progress } from '@/components/ui/progress';
+import { ChartAreaInteractive } from '@/components/shared/AreaChart';
 
 function MenuUtama() {
   return (
@@ -179,7 +180,7 @@ function MenuUtama() {
           </div>
         </div>
       </div>
-      
+      <ChartAreaInteractive />
     </main>
   );
 }

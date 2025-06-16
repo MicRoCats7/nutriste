@@ -9,9 +9,9 @@ import SaranMenu from '@/public/assets/icon_menu/icon_saranMenu.svg';
 import MonitorKonsumsi from '@/public/assets/icon_menu/icon_monitor.svg';
 import Chatbot from '@/public/assets/icon_menu/icon_chatbot.svg';
 import Resep from '@/public/assets/icon_menu/icon_resep.svg';
-import PusatInformasi from '@/public/assets/icon_menu/icon_pusatInformasi.svg';
 import Keluar from '@/public/assets/icon_menu/icon_logout.svg';
 import Image from 'next/image';
+import { Separator } from '../ui/separator';
 
 const Sidebar = () => {
     const pathname = usePathname();
@@ -52,17 +52,11 @@ const Sidebar = () => {
             url: "/resep-tips-sehat",
             activeIcon: Resep,
             inactiveIcon: Resep,
-        },
-        {
-            title: "Pusat Informasi",
-            url: "/pusat-informasi",
-            activeIcon: PusatInformasi,
-            inactiveIcon: PusatInformasi,
         }
     ];
 
     return (
-        <div className="sticky">
+        <div className="sticky top-4">
             <div className='flex flex-col gap-16'>
                 <Image
                     src="/assets/logoSingle.svg"
@@ -78,7 +72,7 @@ const Sidebar = () => {
                         return (
                             <Link href={item.url} key={index}>
                                 <li
-                                    className={`flex items-center gap-3 w-[250px] rounded-[50px] py-3 px-4 
+                                    className={`flex items-center text-sm gap-3 w-[250px] rounded-[50px] py-3 px-4 
                                 ${isActive ? 'bg-[#EAFFB8] text-fourth' : 'bg-transparent text-black'}`}
                                 >
                                     <Image src={isActive ? item.activeIcon : item.inactiveIcon} alt={item.title} />
@@ -92,12 +86,12 @@ const Sidebar = () => {
                     <Image
                         src={Keluar}
                         alt="Logo"
-                        width={50}
-                        height={50}
+                        width={40}
+                        height={40}
                         draggable={false}
                         className="cursor-pointer"
                     />
-                    <span>
+                    <span className='text-sm text-black'>
                         Keluar
                     </span>
                 </div>

@@ -28,9 +28,14 @@ function Login() {
     };
     await API_AUTH.Login(query)
       .then((res: any) => {
+        const isFilled = res.data.user.isFilled;
+
         toast.success(res.data.message)
-        navigate.push("/dashboard")
-        localStorage.setItem("token", res.data.token);
+        if (isFilled === false) {
+          navigate.push("/on-board-form");
+        } else {
+          navigate.push("/menu-utama")
+        }
         console.log(res.data)
         setLoading(false);
       })
