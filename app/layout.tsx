@@ -22,13 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${goli.variable} antialiased`}>
+      <body className={`${goli.variable} antialiased bg-[#EAFFE4]`}>
         <LoadingProvider>
           {children}
-          <Toaster
-            position="top-center"
-            richColors
-          />
+          <Toaster position="top-center" richColors />
         </LoadingProvider>
       </body>
     </html>
