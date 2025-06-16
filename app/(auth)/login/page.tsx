@@ -36,7 +36,7 @@ function Login() {
         } else {
           navigate.push("/menu-utama")
         }
-        console.log(res.data)
+        localStorage.setItem("token", res.data.token);
         setLoading(false);
       })
       .catch((err) => {

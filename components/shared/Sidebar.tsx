@@ -6,12 +6,10 @@ import { usePathname } from 'next/navigation';
 import MenuUtama from '@/public/assets/icon_menu/icon_menuUtama.svg';
 import AnalisisNutrisi from '@/public/assets/icon_menu/icon_analisisNutrisi.svg';
 import SaranMenu from '@/public/assets/icon_menu/icon_saranMenu.svg';
-import MonitorKonsumsi from '@/public/assets/icon_menu/icon_monitor.svg';
 import Chatbot from '@/public/assets/icon_menu/icon_chatbot.svg';
 import Resep from '@/public/assets/icon_menu/icon_resep.svg';
 import Keluar from '@/public/assets/icon_menu/icon_logout.svg';
 import Image from 'next/image';
-import { Separator } from '../ui/separator';
 
 const Sidebar = () => {
     const pathname = usePathname();
@@ -34,12 +32,6 @@ const Sidebar = () => {
             url: "/saran-menu",
             activeIcon: SaranMenu,
             inactiveIcon: SaranMenu,
-        },
-        {
-            title: "Monitor Konsumsi",
-            url: "/monitor-konsumsi",
-            activeIcon: MonitorKonsumsi,
-            inactiveIcon: MonitorKonsumsi,
         },
         {
             title: "AI Chatbot",
@@ -82,7 +74,7 @@ const Sidebar = () => {
                         );
                     })}
                 </ul>
-                <div className='flex items-center gap-3'>
+                <div className='flex items-center gap-3 mt-20'>
                     <Image
                         src={Keluar}
                         alt="Logo"
