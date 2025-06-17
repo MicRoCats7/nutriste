@@ -6,7 +6,11 @@ import React from 'react'
 
 function OnBoardForm() {
   const navigate = useRouter();
-  const username = localStorage.getItem('username');
+  const [username, setUsername] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setUsername(localStorage.getItem('username'));
+  }, []);
 
   return (
     <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>

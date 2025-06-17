@@ -59,7 +59,7 @@ function Login() {
               <form className="flex flex-col gap-4 mt-6 w-full" onSubmit={handleLogin}>
                 <span className="font-normal text-base text-third">Nama Pengguna (Username)/E-mail</span>
                 <Input
-                  type="email"
+                  type="text"
                   placeholder="Masukkan Username/E-mail"
                   className="border border-[#4C572D] w-full text-sm py-6 mb-4"
                   onChange={(e) => { setEmail(e.target.value) }}
