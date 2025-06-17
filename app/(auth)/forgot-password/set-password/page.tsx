@@ -72,6 +72,20 @@ function SetPassword() {
         });
     };
 
+    useEffect(() => {
+      const localToken = localStorage.getItem('token');
+
+      if (!localToken) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromURL = urlParams.get('token');
+
+        if (tokenFromURL) {
+          localStorage.setItem('token', tokenFromURL);
+        }
+      }
+    }, []);
+    
+
     return (
         <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>
             <div className="flex flex-col gap-[33px] items-center justify-center min-h-screen py-10">
