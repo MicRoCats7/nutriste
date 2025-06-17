@@ -23,18 +23,27 @@ Expo CLI (untuk pengembangan mobile)
 
 Langkah-langkah Instalasi
 1. Clone repositori ini:
+```bash
 git clone https://github.com/MicRoCats7/nutriste.git
 cd nutriste
+```
+
 2. Install dependencies:
+```bash
 npm install
 # atau
 yarn install
+```
+
 3. Setup environment variables:
 Buat file .env di root folder dan isi dengan variabel yang diperlukan (lihat .env.example untuk referensi)
+
 Jalankan aplikasi:
+```bash
 npm start
 # atau
 yarn start
+```
 
 Penggunaan
 Untuk Pengguna
@@ -48,14 +57,16 @@ Pantau progress nutrisi Anda di dashboard
 
 Untuk Pengembang
 Struktur direktori:
+```bash
 /src
   /components - Komponen UI yang dapat digunakan kembali
   /screens - Halaman aplikasi
   /services - Logika bisnis dan API calls
   /assets - Gambar, font, dan aset lainnya
   /utils - Fungsi utilitas dan helpers
+```
 
-  Script yang tersedia:
+Script yang tersedia:
 
 npm start: Menjalankan aplikasi di mode development
 
