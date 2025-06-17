@@ -1,4 +1,4 @@
-import { baseUrl } from '@/config/api';
+import api, { baseUrl } from '@/config/api';
 import axios from 'axios';
 
 export const Login = (data: any) => {
@@ -64,6 +64,10 @@ export const ChangePassword = (data: any) => {
         reject(err);
       });
   });
+};
+
+export const addPassword = (data: any) => {
+  return api.post(`/auth/password`, data);
 };
 
 export const ResendOtp = (data: any) => {

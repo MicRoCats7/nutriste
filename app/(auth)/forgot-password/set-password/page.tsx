@@ -48,6 +48,30 @@ function SetPassword() {
             })
     };
 
+    const handleAddPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setLoading(true);
+
+      const query = {
+        newPassword: newPassword,
+        confirmPassword: confirmNewPassword,
+      };
+      await API_AUTH.addPassword(query)
+        .then((res: any) => {
+          toast.success(res.data.message);
+          navigate.push('/forgot-password/set-password/success');
+          setLoading(false);
+          localStorage.removeItem('email');
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+          setLoading(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
+
     return (
         <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>
             <div className="flex flex-col gap-[33px] items-center justify-center min-h-screen py-10">
@@ -83,7 +107,13 @@ function SetPassword() {
                             </div>
                             <Button
                                 className="w-3/4 py-6 bg-[#AFCB6B] font-semibold text-lg mt-6"
-                                onClick={(e) => handleSetPassword(e)}
+                                onClick={(e) => {
+                                    if (email) {
+                                        handleSetPassword(e);
+                                    } else {
+                                        handleAddPassword(e);
+                                    }
+                                }}
                             >
                                 Perbarui Kata Sandi
                             </Button>
