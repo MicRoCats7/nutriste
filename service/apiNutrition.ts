@@ -23,3 +23,7 @@ export const getNutritionToday = () => {
 export const getCalories = (range: '7d' | '30d' | '90d') => {
   return api.get(`/calories?days=${range}`);
 };
+
+export const getFunFact = () => {
+  return api.get(`/fun-fact`);
+};

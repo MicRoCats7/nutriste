@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 function AnalisisNutrisi() {
   const { setLoading } = useLoading();
   const [profile, setProfile] = React.useState<any>([]);
+  const [todayNutrition, setTodayNutrition] = React.useState<any>({});
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [target, setTargetValues] = React.useState({
     calorie: 250,
@@ -67,13 +68,31 @@ function AnalisisNutrisi() {
       });
   };
 
+  const getTodayNutrition = async () => {
+    setLoading(true);
+
+    await API_NUTRITION.getNutritionToday()
+      .then((res) => {
+        setTodayNutrition(res.data);
+        console.log(res.data.nutritionData[0]?.value);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   React.useEffect(() => {
     getProfile();
+    getTodayNutrition();
   }, []);
 
   return (
     <main>
-      <Navbar />
+      <Navbar photo={profile?.photo} />
       <div className="flex flex-col mt-9 gap-2">
         <div className="grid grid-cols-2 gap-2.5 mb-5 w-[42%]">
           <BeratBadanCard profile={profile} />
@@ -103,28 +122,33 @@ function AnalisisNutrisi() {
                         <div className="flex items-center justify-between">
                           <span className="text-fourth text-base font-medium pt-1">Kalori</span>
                           <div className="relative w-2/3">
-                            <Input type="number" value={target.calorie} onChange={(e) => setTargetValues({ ...target, calorie: Number(e.target.value) })} className="mt-2 w-full pr-12" />
+                            <Input type="number" value={todayNutrition?.nutritionData?.[0]?.target || 0 || target.calorie} onChange={(e) => setTargetValues({ ...target, calorie: Number(e.target.value) })} className="mt-2 w-full pr-12" />
                             <span className="text-fourth text-sm font-medium absolute bottom-2 right-3">kcal</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-fourth text-base font-medium pt-1">Karbohidrat</span>
                           <div className="relative w-2/3">
-                            <Input type="number" className="mt-2 w-full pr-12" value={target.carbohydrate} onChange={(e) => setTargetValues({ ...target, carbohydrate: Number(e.target.value) })} />
+                            <Input
+                              type="number"
+                              className="mt-2 w-full pr-12"
+                              value={todayNutrition?.nutritionData?.[2]?.target || 0 || target.carbohydrate}
+                              onChange={(e) => setTargetValues({ ...target, carbohydrate: Number(e.target.value) })}
+                            />
                             <span className="text-fourth text-sm font-medium absolute bottom-2 right-3">gram</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-fourth text-base font-medium pt-1">Protein</span>
                           <div className="relative w-2/3">
-                            <Input type="number" className="mt-2 w-full pr-12" value={target.protein} onChange={(e) => setTargetValues({ ...target, protein: Number(e.target.value) })} />
+                            <Input type="number" className="mt-2 w-full pr-12" value={todayNutrition?.nutritionData?.[1]?.target || 0 || target.protein} onChange={(e) => setTargetValues({ ...target, protein: Number(e.target.value) })} />
                             <span className="text-fourth text-sm font-medium absolute bottom-2 right-3">gram</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-fourth text-base font-medium pt-1">Lemak</span>
                           <div className="relative w-2/3">
-                            <Input type="number" className="mt-2 w-full pr-12" value={target.fat} onChange={(e) => setTargetValues({ ...target, fat: Number(e.target.value) })} />
+                            <Input type="number" className="mt-2 w-full pr-12" value={todayNutrition?.nutritionData?.[3]?.target || 0 || target.fat} onChange={(e) => setTargetValues({ ...target, fat: Number(e.target.value) })} />
                             <span className="text-fourth text-sm font-medium absolute bottom-2 right-3">gram</span>
                           </div>
                         </div>
@@ -132,7 +156,7 @@ function AnalisisNutrisi() {
                       <div className="flex items-center justify-center gap-2 mt-5 w-full">
                         <Button
                           variant="outline"
-                          className="w-1/2"
+                          className="w-1/2 cursor-pointer"
                           onClick={() =>
                             setTargetValues({
                               calorie: 250,
@@ -154,30 +178,42 @@ function AnalisisNutrisi() {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-4 mt-7">
                     <span className="font-bold text-fourth text-base">Kalori</span>
-                    <Progress value={33} className="w-full ml-11" />
+                    <Progress value={todayNutrition?.nutritionData?.[0]?.percentage || 0} className="w-full ml-11" />
                     <span className="text-xs w-1/2 font-normal text-[#614034]">
-                      <strong>760/2000</strong> Kcal
+                      <strong>
+                        {todayNutrition?.nutritionData?.[0]?.value || 0}/{todayNutrition?.nutritionData?.[0]?.target || 0}
+                      </strong>{' '}
+                      Kcal
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="font-bold text-fourth text-base">Protein</span>
-                    <Progress value={33} className="w-full ml-9" />
+                    <Progress value={todayNutrition?.nutritionData?.[1]?.percentage || 0} className="w-full ml-9" />
                     <span className="text-xs w-1/2 font-normal text-[#614034]">
-                      <strong>760/2000</strong> Kcal
+                      <strong>
+                        {todayNutrition?.nutritionData?.[1]?.value || 0}/{todayNutrition?.nutritionData?.[1]?.target || 0}
+                      </strong>{' '}
+                      gram
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="font-bold text-fourth text-base">Karbohidrat</span>
-                    <Progress value={33} className="w-full" />
+                    <Progress value={todayNutrition?.nutritionData?.[2]?.percentage || 0} className="w-full" />
                     <span className="text-xs w-1/2 font-normal text-[#614034]">
-                      <strong>760/2000</strong> Kcal
+                      <strong>
+                        {todayNutrition?.nutritionData?.[2]?.value || 0}/{todayNutrition?.nutritionData?.[2]?.target || 0}
+                      </strong>{' '}
+                      gram
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="font-bold text-fourth text-base">Lemak</span>
-                    <Progress value={33} className="w-full ml-[42px]" />
+                    <Progress value={todayNutrition?.nutritionData?.[3]?.percentage || 0} className="w-full ml-[42px]" />
                     <span className="text-xs w-1/2 font-normal text-[#614034]">
-                      <strong>760/2000</strong> Kcal
+                      <strong>
+                        {todayNutrition?.nutritionData?.[3]?.value || 0}/{todayNutrition?.nutritionData?.[3]?.target || 0}
+                      </strong>{' '}
+                      gram
                     </span>
                   </div>
                 </div>
