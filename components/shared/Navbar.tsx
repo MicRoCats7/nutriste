@@ -4,12 +4,14 @@ import { Input } from '../ui/input';
 import { Search } from 'lucide-react';
 
 function Navbar() {
+  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h3 className="text-4xl font-normal text-fourth">
-            Halo <strong>Amri!</strong>
+            Halo <strong>{username ? username.split(' ')[0] : ''}!</strong>!
           </h3>
           <p className="text-lg text-fourth opacity-45">Ayo kita mulai hidup lebih sehat!</p>
         </div>
