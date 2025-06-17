@@ -33,10 +33,10 @@ function Login() {
         toast.success(res.data.message);
         if (isFilled === false) {
           navigate.push('/on-board-form');
-          localStorage.setItem('username', res.data.user.username);
         } else {
           navigate.push('/menu-utama');
         }
+        localStorage.setItem('username', res.data.user.username);
         localStorage.setItem('token', res.data.token);
         setLoading(false);
       })
