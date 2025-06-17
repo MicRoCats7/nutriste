@@ -1,25 +1,22 @@
-"use client";
+'use client';
 
 import bg from '@/public/assets/bg-onboarding-form.svg';
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React from 'react';
 
 function OnBoardForm() {
   const router = useRouter();
-  const [username, setUsername] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    setUsername(localStorage.getItem('username'));
-  }, []);
+  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
 
   React.useEffect(() => {
     const localToken = localStorage.getItem('token');
-    const localUsername = localStorage.getItem('username')
+    const localUsername = localStorage.getItem('username');
 
     if (!localToken && !localUsername) {
       const urlParams = new URLSearchParams(window.location.search);
       const tokenFromURL = urlParams.get('token');
-      const username = urlParams.get('username') ? decodeURIComponent(urlParams.get('username') as string) : "";
+      const username = urlParams.get('username') ? decodeURIComponent(urlParams.get('username') as string) : '';
 
       if (tokenFromURL && username) {
         localStorage.setItem('token', tokenFromURL);
@@ -33,7 +30,7 @@ function OnBoardForm() {
       <div className="flex flex-col gap-[33px] items-center justify-center min-h-screen">
         <div className="flex flex-col items-center justify-center font-normal text-black">
           <h1 className="text-6xl">
-            Hai, <strong className='capitalize'>{username?.replace(/_/g, ' ')}</strong>
+            Hai, <strong className="capitalize">{username ? username.replace(/_/g, ' ') : ''}</strong>
           </h1>
           <h3 className="text-xl text-center">Ayo Jawab pertanyaan ini dulu yuk!</h3>
         </div>
@@ -50,4 +47,4 @@ function OnBoardForm() {
   );
 }
 
-export default OnBoardForm
+export default OnBoardForm;
