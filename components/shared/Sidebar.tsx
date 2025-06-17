@@ -74,7 +74,7 @@ const Sidebar = () => {
                         );
                     })}
                 </ul>
-                <div className='flex items-center gap-3 mt-20'>
+                <div className='flex items-center gap-3 mt-10'>
                     <Image
                         src={Keluar}
                         alt="Logo"

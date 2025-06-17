@@ -31,3 +31,11 @@ export const getFunFact = () => {
 export const getImagesMeal = () => {
   return api.get(`/meal-plan-images`);
 };
+
+export const sendChat = (data: any) => {
+  return api.post(`/chat`, data);
+};
+
+export const getHistoryChat = () => {
+  return api.get(`/chat`);
+};
