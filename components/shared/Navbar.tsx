@@ -1,9 +1,13 @@
+"use client";
+
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '../ui/input';
 import { Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 function Navbar(props: any) {
+  const router = useRouter();
   const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
 
   return (
@@ -11,7 +15,7 @@ function Navbar(props: any) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h3 className="text-4xl font-normal text-fourth">
-            Halo <strong className='capitalize'>{username ? username.split(' ')[0] : ''}!</strong>
+            Halo <strong className="capitalize">{username ? username.split(' ')[0] : ''}!</strong>
           </h3>
           <p className="text-lg text-fourth opacity-45">Ayo kita mulai hidup lebih sehat!</p>
         </div>
@@ -20,7 +24,7 @@ function Navbar(props: any) {
             <Search className="text-[#4C572D] w-5 h-5 absolute top-3.5 left-3" />
             <Input type="text" placeholder="Cari..." className="w-full bg-white border border-[#4C572D] rounded-full pl-10 pr-2 py-6 outline-none" />
           </div>
-          <Avatar className="cursor-pointer w-12 h-12">
+          <Avatar className="cursor-pointer w-12 h-12" onClick={() => router.push('/profile')}>
             <AvatarImage src={props.photo} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>

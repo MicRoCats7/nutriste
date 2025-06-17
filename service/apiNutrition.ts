@@ -27,3 +27,7 @@ export const getCalories = (range: '7d' | '30d' | '90d') => {
 export const getFunFact = () => {
   return api.get(`/fun-fact`);
 };
+
+export const getImagesMeal = () => {
+  return api.get(`/meal-plan-images`);
+};

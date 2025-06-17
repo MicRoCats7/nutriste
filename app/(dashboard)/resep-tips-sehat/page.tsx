@@ -1,18 +1,70 @@
+"use client";
+
 import { BeratBadanCard } from '@/components/shared/BeratBadanCard'
 import Navbar from '@/components/shared/Navbar'
 import { StatusBMICard } from '@/components/shared/StatusBMICard'
 import { Separator } from '@/components/ui/separator'
+import { useLoading } from '@/context/LoadingContext'
 import Image from 'next/image'
 import React from 'react'
+import * as API_NUTRITION from '@/service/apiNutrition'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation';
 
 function ResepTips() {
+    const { setLoading } = useLoading();
+    const [profile, setProfile] = React.useState<any>([]);
+    const [imagesMealPlan, setImagesMealPlan] = React.useState<any[]>([]);
+    const router = useRouter();
+
+      const getProfile = async () => {
+        setLoading(true);
+    
+        await API_NUTRITION.getProfile()
+          .then((res) => {
+            setProfile(res.data.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            toast.error(err.response.data.message);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      };
+
+      const getImagesMealPlan = async () => {
+        setLoading(true);
+
+        await API_NUTRITION.getImagesMeal()
+          .then((res) => {
+            setImagesMealPlan(res.data.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            toast.error(err.response.data.message);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      };
+
+    React.useEffect(() => {
+        getProfile();
+        getImagesMealPlan();
+    }, []);
+
     return (
         <main>
-            <Navbar />
+            <Navbar photo={profile?.photo} />
             <div className="flex flex-col mt-9 gap-2">
                 <div className="grid grid-cols-2 gap-2.5 mb-5 w-[42%]">
-                    <BeratBadanCard />
-                    <StatusBMICard />
+                    <BeratBadanCard 
+                        profile={profile} 
+                    />
+                    <StatusBMICard 
+                        profile={profile}
+                    />
                 </div>
                 <div className="w-full">
                     <div className="bg-[#F8FFF0] rounded-[30px] p-5">
@@ -33,7 +85,10 @@ function ResepTips() {
                                     "Smoothie Bayam dan Pisang"
                                 </h2>
                                 <p className="text-sm text-fourth font-medium">±120 kalori</p>
-                                <span className='text-sm text-[#6B994D] font-medium cursor-pointer'>Lihat Menu</span>
+                                <span 
+                                className='text-sm text-[#6B994D] font-medium cursor-pointer'
+                                onClick={() => router.push('resep-tips-sehat/1')}
+                                >Lihat Menu</span>
                             </div>
                             <div className='flex flex-col items-center justify-center gap-2'>
                                 <Image
