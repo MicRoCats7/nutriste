@@ -1,3 +1,5 @@
+"use client";
+
 import { BeratBadanCard } from '@/components/shared/BeratBadanCard'
 import Navbar from '@/components/shared/Navbar'
 import { StatusBMICard } from '@/components/shared/StatusBMICard'
@@ -16,15 +18,69 @@ import {
 import { TbTargetArrow } from "react-icons/tb";
 import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
+import { useLoading } from '@/context/LoadingContext';
+import * as API_NUTRITION from '@/service/apiNutrition'
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 function AnalisisNutrisi() {
+    const [profile, setProfile] = React.useState<any>([]);
+    const {setLoading} = useLoading();
+
+      const getProfile = async () => {
+        setLoading(true);
+    
+        await API_NUTRITION.getProfile()
+          .then((res) => {
+            setProfile(res.data.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            toast.error(err.response.data.message)
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+
+      const setTarget = async () => {
+        setLoading(true);
+
+        const query = {
+          calorie: 2000,
+          carbohydrate: 300,
+          protein: 100,
+          fat: 70,
+        };
+
+        await API_NUTRITION.setTarget(query)
+          .then((res) => {
+            setProfile(res.data.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            toast.error(err.response.data.message)
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+
+    React.useEffect(() => {
+        getProfile();
+    }, []);
+
     return (
         <main>
             <Navbar />
             <div className="flex flex-col mt-9 gap-2">
                 <div className="grid grid-cols-2 gap-2.5 mb-5 w-[42%]">
-                    <BeratBadanCard />
-                    <StatusBMICard />
+                    <BeratBadanCard 
+                        profile={profile} 
+                    />
+                    <StatusBMICard 
+                        profile={profile} 
+                    />
                 </div>
                 <div className="w-full">
                     <div className="bg-[#F8FFF0] rounded-[30px] p-5">
@@ -91,6 +147,10 @@ function AnalisisNutrisi() {
                                                     </div>
                                                 </div>
                                                 <Slider defaultValue={[33]} max={100} step={1} />
+                                            </div>
+                                            <div className='flex items-center justify-center gap-2 mt-5'>
+                                                <Button variant="outline">Atur Ulang</Button>
+                                                <Button>Simpan</Button>
                                             </div>
                                         </DialogContent>
                                     </Dialog>

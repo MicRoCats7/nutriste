@@ -106,7 +106,7 @@ function MenuUtama() {
                     </div>
                   </div>
                   <ul className="list-disc pl-5 text-fourth font-normal text-sm capitalize">
-                    {meal.food.split(',').map((item: string, idx: number) => (
+                    {meal.food.split('-').map((item: string, idx: number) => (
                       <li key={idx}>{item.trim()}</li>
                     ))}
                   </ul>

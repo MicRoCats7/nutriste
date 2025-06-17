@@ -43,6 +43,10 @@ function Register() {
             });
     };
 
+    const handleGoogleLogin = async () => {
+      window.open('https://nutriste.vercel.app/auth/google', '_self');
+    };
+
     return (
         <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>
             <div className="flex flex-col gap-[33px] items-center justify-center min-h-screen py-10">
@@ -94,7 +98,10 @@ function Register() {
                                     <Separator className="my-4" />
                                 </div>
                             </form>
-                            <Button className="w-full rounded-[13px] font-medium text-black bg-white py-6 border border-[#4C572D]">
+                            <Button 
+                            className="w-full rounded-[13px] font-medium text-black bg-white py-6 border border-[#4C572D]"
+                                onClick={() => handleGoogleLogin()}
+                            >
                                 <FcGoogle size={35} />
                                 Masuk dengan Google
                             </Button>

@@ -15,8 +15,8 @@ import { Input } from '@/components/ui/input';
 function Login() {
   const navigate = useRouter();
   const { setLoading } = useLoading();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,20 +30,24 @@ function Login() {
       .then((res: any) => {
         const isFilled = res.data.user.isFilled;
 
-        toast.success(res.data.message)
+        toast.success(res.data.message);
         if (isFilled === false) {
-          navigate.push("/on-board-form");
+          navigate.push('/on-board-form');
+          localStorage.setItem('username', res.data.user.username);
         } else {
-          navigate.push("/menu-utama")
+          navigate.push('/menu-utama');
         }
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("username", res.data.user.username);
+        localStorage.setItem('token', res.data.token);
         setLoading(false);
       })
       .catch((err) => {
-        toast.error(err.response.data.message)
+        toast.error(err.response.data.message);
         setLoading(false);
       });
+  };
+
+  const handleGoogleLogin = async () => {
+    window.open('https://nutriste.vercel.app/auth/google', '_self');
   };
 
   return (
@@ -62,19 +66,20 @@ function Login() {
                   type="text"
                   placeholder="Masukkan Username/E-mail"
                   className="border border-[#4C572D] w-full text-sm py-6 mb-4"
-                  onChange={(e) => { setEmail(e.target.value) }}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                 />
                 <span className="font-normal text-base text-third">Kata Sandi</span>
                 <Input
                   type="password"
                   placeholder="Kata Sandi"
                   className="border border-[#4C572D] w-full text-sm py-6 mb-4"
-                  onChange={(e) => { setPassword(e.target.value) }}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                 />
-                <span
-                  className="text-xs text-end font-semibold text-[#CC722E] cursor-pointer"
-                  onClick={() => navigate.push('/forgot-password')}
-                >
+                <span className="text-xs text-end font-semibold text-[#CC722E] cursor-pointer" onClick={() => navigate.push('/forgot-password')}>
                   Lupa Kata Sandi?
                 </span>
                 <Button className="w-full rounded-[13px] font-medium text-white bg-main py-6">Masuk</Button>
@@ -83,7 +88,10 @@ function Login() {
                   <span>atau</span>
                   <Separator className="my-4" />
                 </div>
-                <Button className="w-full rounded-[13px] font-medium text-black bg-white py-6 border border-[#4C572D]">
+                <Button 
+                className="w-full rounded-[13px] font-medium text-black bg-white py-6 border border-[#4C572D]"
+                  onClick={() => handleGoogleLogin()}
+                >
                   <FcGoogle size={35} />
                   Masuk dengan Google
                 </Button>

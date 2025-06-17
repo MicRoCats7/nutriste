@@ -11,3 +11,7 @@ export const getProfile = () => {
 export const getMealPlan = () => {
     return api.get(`/meal-plan`);
 };
+
+export const setTarget = (data: any) => {
+  return api.post(`/target-nutrition`, data);
+};
