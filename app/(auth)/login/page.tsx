@@ -37,6 +37,7 @@ function Login() {
           navigate.push("/menu-utama")
         }
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("username", res.data.user.username);
         setLoading(false);
       })
       .catch((err) => {

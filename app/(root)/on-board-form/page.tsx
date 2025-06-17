@@ -6,12 +6,13 @@ import React from 'react'
 
 function OnBoardForm() {
   const navigate = useRouter();
+  const username = localStorage.getItem('username');
 
   return (
     <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>
       <div className="flex flex-col gap-[33px] items-center justify-center min-h-screen">
         <div className="flex flex-col items-center justify-center font-normal text-black">
-          <h1 className='text-6xl'>Hai, <strong>Amri</strong></h1>
+          <h1 className='text-6xl'>Hai, <strong>{username}</strong></h1>
           <h3 className="text-xl text-center">Ayo Jawab pertanyaan ini dulu yuk!</h3>
         </div>
         <span

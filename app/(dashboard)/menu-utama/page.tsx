@@ -1,8 +1,10 @@
+"use client";
+
 import { BeratBadanCard } from '@/components/shared/BeratBadanCard';
 import Navbar from '@/components/shared/Navbar';
 import { StatusBMICard } from '@/components/shared/StatusBMICard';
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SaranMenu from '@/public/assets/icon_menu/icon_saranMenuHitam.svg';
 import { BiSolidCoffeeAlt } from 'react-icons/bi';
 import { FaBowlFood, FaCircleCheck, FaPlusMinus } from 'react-icons/fa6';
@@ -11,16 +13,65 @@ import { IoFastFoodSharp, IoTimer, IoWarning } from 'react-icons/io5';
 import { ChartPieSimple } from '@/components/shared/Chart';
 import { Progress } from '@/components/ui/progress';
 import { ChartAreaInteractive } from '@/components/shared/AreaChart';
+import { useLoading } from '@/context/LoadingContext';
+import * as API_NUTRITION from '@/service/apiNutrition';
+import { toast } from 'sonner';
 
 function MenuUtama() {
+  const { setLoading } = useLoading();
+  const [profile, setProfile] = useState([]);
+  const [mealPlan, setMealPlan] = useState<any[]>([]);
+
+  const getProfile = async () => {
+    setLoading(true);
+
+    await API_NUTRITION.getProfile()
+      .then((res) => {
+        setProfile(res.data.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message)
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  const getMealPlan = async () => {
+    setLoading(true);
+
+    await API_NUTRITION.getMealPlan()
+      .then((res) => {
+        setMealPlan(res.data.suggestion.meal_plan);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message)
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+
+  useEffect(() => {
+    getProfile();
+    getMealPlan();
+  }, []);
+
   return (
     <main>
       <Navbar />
       <div className="flex mt-9 gap-6">
         <div className="w-3/4">
           <div className="grid grid-cols-2 gap-2.5 mb-5">
-            <BeratBadanCard />
-            <StatusBMICard />
+            <BeratBadanCard
+              profile={profile}
+            />
+            <StatusBMICard
+              profile={profile}
+            />
           </div>
           <div className="bg-[#F8FFF0] rounded-[30px] p-5">
             <div className="flex items-center justify-between">
@@ -32,78 +83,38 @@ function MenuUtama() {
                 <Image src={SaranMenu} alt="Saran Menu" width={22} height={22} />
               </div>
             </div>
-            <div className="mt-7 flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5">
-                <BiSolidCoffeeAlt size={20} color="2F3B10" />
-                <span className="text-fourth font-semibold">Sarapan</span>
-              </div>
-              <div className="flex items-center justify-between bg-[#EAFFB8] px-3 py-1.5 rounded-xl">
-                <span className="font-semibold text-third text-sm">07.00 AM</span>
-                <div className="flex items-center font-semibold text-third text-sm">
-                  <FaPlusMinus />
-                  450kcal
+            {mealPlan.length > 0 ? (
+              mealPlan.map((meal, index) => (
+                <div className="mt-7 flex flex-col gap-1.5" key={index}>
+                  <div className="flex items-center gap-1.5">
+                    {meal.meal_time === 'Sarapan' ? (
+                      <BiSolidCoffeeAlt size={20} color="2F3B10" />
+                    ) : meal.meal_time === 'Makan Siang' ? (
+                      <GiChickenOven size={20} color="2F3B10" />
+                    ) : meal.meal_time === 'Makan Malam' ? (
+                      <FaBowlFood size={20} color="2F3B10" />
+                    ) : (
+                      <IoFastFoodSharp size={20} color="2F3B10" />
+                    )}
+                    <span className="text-fourth font-semibold">{meal.meal_time}</span>
+                  </div>
+                  <div className="flex items-center justify-between bg-[#EAFFB8] px-3 py-1.5 rounded-xl">
+                    <span className="font-semibold text-third text-sm">{meal.time}</span>
+                    <div className="flex items-center font-semibold text-third text-sm">
+                      <FaPlusMinus />
+                      {meal.calories}kcal
+                    </div>
+                  </div>
+                  <ul className="list-disc pl-5 text-fourth font-normal text-sm capitalize">
+                    {meal.food.split(',').map((item: string, idx: number) => (
+                      <li key={idx}>{item.trim()}</li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-              <ul className="list-disc pl-5 text-fourth font-normal text-sm">
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-              </ul>
-            </div>
-            <div className="mt-7 flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5">
-                <GiChickenOven size={20} color="2F3B10" />
-                <span className="text-fourth font-semibold">Makan Siang</span>
-              </div>
-              <div className="flex items-center justify-between bg-[#EAFFB8] px-3 py-1.5 rounded-xl">
-                <span className="font-semibold text-third text-sm">07.00 AM</span>
-                <div className="flex items-center font-semibold text-third text-sm">
-                  <FaPlusMinus />
-                  450kcal
-                </div>
-              </div>
-              <ul className="list-disc pl-5 text-fourth font-normal text-sm">
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-              </ul>
-            </div>
-            <div className="mt-7 flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5">
-                <FaBowlFood size={20} color="2F3B10" />
-                <span className="text-fourth font-semibold">Makan Malam</span>
-              </div>
-              <div className="flex items-center justify-between bg-[#EAFFB8] px-3 py-1.5 rounded-xl">
-                <span className="font-semibold text-third text-sm">07.00 AM</span>
-                <div className="flex items-center font-semibold text-third text-sm">
-                  <FaPlusMinus />
-                  450kcal
-                </div>
-              </div>
-              <ul className="list-disc pl-5 text-fourth font-normal text-sm">
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-              </ul>
-            </div>
-            <div className="mt-7 flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5">
-                <IoFastFoodSharp size={20} color="2F3B10" />
-                <span className="text-fourth font-semibold">Cemilan</span>
-              </div>
-              <div className="flex items-center justify-between bg-[#EAFFB8] px-3 py-1.5 rounded-xl">
-                <span className="font-semibold text-third text-sm">07.00 AM</span>
-                <div className="flex items-center font-semibold text-third text-sm">
-                  <FaPlusMinus />
-                  450kcal
-                </div>
-              </div>
-              <ul className="list-disc pl-5 text-fourth font-normal text-sm">
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-                <li>Oatmeal dengan pisang & madu</li>
-              </ul>
-            </div>
+              )
+              )) : (
+              <p className="text-fourth font-normal text-sm mt-5">Belum ada saran menu untuk hari ini.</p>
+            )}
           </div>
         </div>
         <div className="w-full flex flex-col gap-3">
