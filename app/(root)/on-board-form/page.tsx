@@ -5,11 +5,27 @@ import { useRouter } from 'next/navigation';
 import React from 'react'
 
 function OnBoardForm() {
-  const navigate = useRouter();
+  const router = useRouter();
   const [username, setUsername] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     setUsername(localStorage.getItem('username'));
+  }, []);
+
+  React.useEffect(() => {
+    const localToken = localStorage.getItem('token');
+    const localUsername = localStorage.getItem('username')
+
+    if (!localToken && !localUsername) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenFromURL = urlParams.get('token');
+      const username = decodeURIComponent(urlParams.get('username') || "")
+
+      if (tokenFromURL && username) {
+        localStorage.setItem('token', tokenFromURL);
+        localStorage.setItem('username', username);
+      }
+    }
   }, []);
 
   return (
@@ -22,7 +38,7 @@ function OnBoardForm() {
         <span
           className='underline text-xl font-bold cursor-pointer'
           onClick={() => {
-            navigate.push('on-board-form/form-account');
+            router.push('on-board-form/form-account');
           }}
         >
           Tekan Lanjut
