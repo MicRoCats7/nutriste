@@ -19,7 +19,7 @@ function OnBoardForm() {
     if (!localToken && !localUsername) {
       const urlParams = new URLSearchParams(window.location.search);
       const tokenFromURL = urlParams.get('token');
-      const username = decodeURIComponent(urlParams.get('username') || "")
+      const username = urlParams.get('username') ? decodeURIComponent(urlParams.get('username') as string) : "";
 
       if (tokenFromURL && username) {
         localStorage.setItem('token', tokenFromURL);
