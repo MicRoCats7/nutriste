@@ -59,7 +59,7 @@ function SetPassword() {
       await API_AUTH.addPassword(query)
         .then((res: any) => {
           toast.success(res.data.message);
-          navigate.push('/forgot-password/set-password/success');
+          navigate.push('/forgot-password/set-password/success-add-password');
           setLoading(false);
           localStorage.removeItem('email');
         })
