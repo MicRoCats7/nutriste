@@ -3,12 +3,6 @@
 import { Pie, PieChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
 
-const chartData = [
-  { type: 'karbohidrat', price: 150, fill: '#95E7AF' },
-  { type: 'protein', price: 50, fill: '#5874FF' },
-  { type: 'lemak', price: 30, fill: '#9747FF' },
-  { type: 'vitamin', price: 20, fill: '#FFB567' },
-];
 const chartConfig = {
   price: {
     label: 'Jumlah (g)',
@@ -22,9 +16,6 @@ const chartConfig = {
   lemak: {
     label: 'Lemak',
   },
-  vitamin: {
-    label: 'Vitamin',
-  },
 } satisfies ChartConfig;
 
 function CustomTooltip({ active, payload }: { active: boolean; payload: any }) {
@@ -37,14 +28,20 @@ function CustomTooltip({ active, payload }: { active: boolean; payload: any }) {
           <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: data.fill }} />
           <p className="text-gray-500 font-medium text-sm">{label}</p>
         </div>
-        <p className="text-black font-bold text-sm">{data.price.toLocaleString()}</p>
+        <p className="text-black font-bold text-sm">{data.price.toLocaleString()}g</p>
       </div>
     );
   }
   return null;
 }
 
-export function ChartPieSimple() {
+export function ChartNutrition({ data }: { data: any }) {
+  const chartData = [
+    { type: 'karbohidrat', price: data?.nutritionData?.[2]?.value || 0, fill: '#FEFEAA' },
+    { type: 'protein', price: data?.nutritionData?.[1]?.value || 0, fill: '#6B994D' },
+    { type: 'lemak', price: data?.nutritionData?.[3]?.value || 0, fill: '#2F3B10' },
+  ];
+
   return (
     <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
       <PieChart>

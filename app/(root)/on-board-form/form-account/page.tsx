@@ -92,7 +92,6 @@ function FormAccount() {
         toast.success(res.data.message)
         setLoading(false);
         navigate.push('/menu-utama')
-        localStorage.removeItem('username');
       })
       .catch((err) => {
         toast.error(err.response.data.message || "Error")
