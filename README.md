@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+NutriSte adalah aplikasi manajemen nutrisi yang membantu pengguna untuk melacak asupan makanan, menghitung kebutuhan kalori harian, dan memberikan rekomendasi makanan sehat.
 
-## Getting Started
+Fitur Utama
+📊 Pelacakan asupan nutrisi harian
 
-First, run the development server:
+🍎 Database makanan dengan informasi nutrisi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🏋️‍♂️ Kalkulator kebutuhan kalori berdasarkan profil pengguna
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+📈 Visualisasi data nutrisi dalam bentuk grafik
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🔔 Pengingat untuk makan dan minum air
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+� Rekomendasi makanan berdasarkan tujuan kesehatan
 
-## Learn More
+Instalasi
+Prasyarat
+Node.js (v14 atau lebih baru)
 
-To learn more about Next.js, take a look at the following resources:
+npm atau yarn
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Expo CLI (untuk pengembangan mobile)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Langkah-langkah Instalasi
+1. Clone repositori ini:
+git clone https://github.com/MicRoCats7/nutriste.git
+cd nutriste
+2. Install dependencies:
+npm install
+# atau
+yarn install
+3. Setup environment variables:
+Buat file .env di root folder dan isi dengan variabel yang diperlukan (lihat .env.example untuk referensi)
+Jalankan aplikasi:
+npm start
+# atau
+yarn start
 
-## Deploy on Vercel
+Penggunaan
+Untuk Pengguna
+Buat akun baru atau login dengan akun yang sudah ada
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Isi profil kesehatan Anda (usia, berat badan, tinggi badan, aktivitas fisik, dll.)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Mulai mencatat makanan yang dikonsumsi
+
+Pantau progress nutrisi Anda di dashboard
+
+Untuk Pengembang
+Struktur direktori:
+/src
+  /components - Komponen UI yang dapat digunakan kembali
+  /screens - Halaman aplikasi
+  /services - Logika bisnis dan API calls
+  /assets - Gambar, font, dan aset lainnya
+  /utils - Fungsi utilitas dan helpers
+
+  Script yang tersedia:
+
+npm start: Menjalankan aplikasi di mode development
+
+npm test: Menjalankan test suite
+
+npm run lint: Menjalankan linter
+
+npm run build: Membuild aplikasi untuk production
