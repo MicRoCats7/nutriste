@@ -53,7 +53,7 @@ function SetPassword() {
       setLoading(true);
 
       const query = {
-        newPassword: newPassword,
+        password: newPassword,
         confirmPassword: confirmNewPassword,
       };
       await API_AUTH.addPassword(query)
