@@ -26,17 +26,19 @@ function OnBoardForm() {
         localStorage.setItem('username', username);
       }
     }
-  }, []);
+  }, [username]);
 
   return (
     <main className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${bg.src})` }}>
       <div className="flex flex-col gap-[33px] items-center justify-center min-h-screen">
         <div className="flex flex-col items-center justify-center font-normal text-black">
-          <h1 className='text-6xl'>Hai, <strong>{username}</strong></h1>
+          <h1 className="text-6xl">
+            Hai, <strong className='capitalize'>{username?.replace(/_/g, ' ')}</strong>
+          </h1>
           <h3 className="text-xl text-center">Ayo Jawab pertanyaan ini dulu yuk!</h3>
         </div>
         <span
-          className='underline text-xl font-bold cursor-pointer'
+          className="underline text-xl font-bold cursor-pointer"
           onClick={() => {
             router.push('on-board-form/form-account');
           }}
@@ -45,7 +47,7 @@ function OnBoardForm() {
         </span>
       </div>
     </main>
-  )
+  );
 }
 
 export default OnBoardForm
