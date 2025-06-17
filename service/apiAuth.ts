@@ -82,3 +82,7 @@ export const ResendOtp = (data: any) => {
       });
   });
 };
+
+export const Logout = () => {
+  return api.get(`/auth/logout`);
+};

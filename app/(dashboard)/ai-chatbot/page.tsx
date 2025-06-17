@@ -1,6 +1,5 @@
 'use client';
 
-import Navbar from '@/components/shared/Navbar';
 import Image from 'next/image';
 import React from 'react';
 import iconAI from '@/public/assets/icon/icon_ai.svg';

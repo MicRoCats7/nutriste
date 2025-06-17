@@ -11,7 +11,6 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { TbTargetArrow } from 'react-icons/tb';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
 import { useLoading } from '@/context/LoadingContext';
 import * as API_NUTRITION from '@/service/apiNutrition';
 import { toast } from 'sonner';

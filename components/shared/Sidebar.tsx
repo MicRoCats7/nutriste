@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import MenuUtama from '@/public/assets/icon_menu/icon_menuUtama.svg';
 import AnalisisNutrisi from '@/public/assets/icon_menu/icon_analisisNutrisi.svg';
 import SaranMenu from '@/public/assets/icon_menu/icon_saranMenu.svg';
@@ -10,9 +10,14 @@ import Chatbot from '@/public/assets/icon_menu/icon_chatbot.svg';
 import Resep from '@/public/assets/icon_menu/icon_resep.svg';
 import Keluar from '@/public/assets/icon_menu/icon_logout.svg';
 import Image from 'next/image';
+import * as API_AUTH from '@/service/apiAuth';
+import { useLoading } from '@/context/LoadingContext';
+import { toast } from 'sonner';
 
 const Sidebar = () => {
     const pathname = usePathname();
+    const { setLoading } = useLoading();
+    const router = useRouter();
 
     const items = [
         {
@@ -47,6 +52,22 @@ const Sidebar = () => {
         }
     ];
 
+    const handleLogout = async () => {
+      setLoading(true);
+
+      await API_AUTH.Logout()
+        .then((res) => {
+          toast.success("Logout berhasil");
+          router.push("/login");
+          localStorage.removeItem("token");
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
     return (
         <div className="sticky top-4">
             <div className='flex flex-col gap-16'>
@@ -74,7 +95,7 @@ const Sidebar = () => {
                         );
                     })}
                 </ul>
-                <div className='flex items-center gap-3 mt-10'>
+                <div className='flex items-center gap-3 mt-10 cursor-pointer' onClick={handleLogout}>
                     <Image
                         src={Keluar}
                         alt="Logo"

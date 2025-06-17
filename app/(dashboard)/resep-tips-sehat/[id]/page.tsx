@@ -6,13 +6,15 @@ import React from 'react';
 import * as API_NUTRITION from '@/service/apiNutrition';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
 
 function DetailResep() {
   const [profile, setProfile] = React.useState<any>([]);
+  const [recipe, setRecipe] = React.useState<any>(null);
   const { setLoading } = useLoading();
   const router = useRouter();
+  const params = useParams();
 
   const getProfile = async () => {
     setLoading(true);
@@ -30,8 +32,25 @@ function DetailResep() {
       });
   };
 
+  const getDetailResep = async () => {
+    setLoading(true);
+    const index = params.id as string;
+
+    await API_NUTRITION.getDetailResep(index)
+      .then((res) => {
+        setRecipe(res.data);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   React.useEffect(() => {
     getProfile();
+    getDetailResep();
   }, []);
 
   return (
@@ -48,29 +67,27 @@ function DetailResep() {
             <div></div>
           </div>
           <div className="mt-10 flex items-start justify-center gap-10">
-            <div className="flex flex-col items-center justify-center gap-2">
-              <Image src="/assets/img-resep.svg" alt="Sarapan" className="w-full h-auto rounded-[18px] object-cover" width={400} height={300} />
-              <h2 className="text-sm font-bold text-fourth text-center">"Smoothie Bayam dan Pisang"</h2>
-              <p className="text-sm text-fourth font-medium">±120 kalori</p>
+            <div className="flex flex-col items-center justify-center gap-2 w-full max-w-[300px]">
+              <div className="w-full h-[200px] overflow-hidden rounded-[18px]">
+                <Image src={recipe?.image} alt="Sarapan" className="w-full h-full rounded-[18px] object-cover" width={500} height={500} />
+              </div>
+              <h2 className="text-sm font-bold text-fourth text-center">"{recipe?.recipe?.food_name}"</h2>
             </div>
             <div className="flex flex-col items-start justify-center gap-2">
               <div>
                 <h3 className="text-lg font-bold text-fourth">Bahan-bahan:</h3>
                 <ul className="list-disc pl-5 text-sm text-fourth">
-                  <li>1 cangkir bayam segar</li>
-                  <li>1 buah pisang matang</li>
-                  <li>1/2 cangkir yogurt rendah lemak</li>
-                  <li>1/2 cangkir susu almond</li>
-                  <li>1 sendok makan madu (opsional)</li>
+                  {recipe?.recipe?.ingredients.map((ingredient: string, index: number) => (
+                    <li key={index}>{ingredient}</li>
+                  ))}
                 </ul>
               </div>
               <div>
                 <h3 className="text-lg font-bold text-fourth">Cara Membuat:</h3>
                 <ol className="list-decimal pl-5 text-sm text-fourth">
-                  <li>Cuci bayam segar dan potong-potong.</li>
-                  <li>Masukkan semua bahan ke dalam blender.</li>
-                  <li>Blender hingga halus dan tercampur rata.</li>
-                  <li>Tuang ke dalam gelas dan nikmati!</li>
+                  {recipe?.recipe?.step_by_step.map((step: string, index: number) => (
+                    <li key={index}>{step}</li>
+                  ))}
                 </ol>
               </div>
             </div>

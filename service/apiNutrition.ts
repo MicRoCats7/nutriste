@@ -1,15 +1,15 @@
-import api from "@/config/api";
+import api from '@/config/api';
 
 export const addProfile = (data: any) => {
-    return api.post(`/profile`, data);
+  return api.post(`/profile`, data);
 };
 
 export const getProfile = () => {
-    return api.get(`/profile`);
+  return api.get(`/profile`);
 };
 
 export const getMealPlan = () => {
-    return api.get(`/meal-plan`);
+  return api.get(`/meal-plan`);
 };
 
 export const setTarget = (data: any) => {
@@ -38,4 +38,16 @@ export const sendChat = (data: any) => {
 
 export const getHistoryChat = () => {
   return api.get(`/chat`);
+};
+
+export const getResep = () => {
+  return api.get(`/recipes`);
+};
+
+export const getDetailResep = (id: string) => {
+  return api.post(`/specific-recipe?index=${id}`);
+};
+
+export const getTips = () => {
+  return api.get(`/tips`);
 };
